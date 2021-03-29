@@ -1,80 +1,78 @@
+const moment = require('moment');
 const nomePetshop = "PETSHOP AVANADE";
+const fs = require('fs');
+// const petsJSON = require('./pets-Json');
+let petsJSON = fs.readFileSync('./pets-Json.json');
 
-let pets = [{
-    nome: 'Max',
-    tipo: 'Cachorro',
-    idade: 6,
-    raca: 'Boxer',
-    peso: 25,
-    tutor: 'João',
-    contato: '(81) 99999-9999',
-    vacinado: true,
-    servicos: ['banho','tosa']
-},
-{
-    nome: 'Mel',
-    tipo: 'Cachorro',
-    idade: 3,
-    raca: 'Vira-lata',
-    peso: 15,
-    tutor: 'João',
-    contato: '(81) 99999-9999',
-    vacinado: true,
-    servicos: ['tosa','Aparar unha']
-},
-{
-    nome: 'Ajudante de papai noel',
-    tipo: 'Cachorro',
-    idade: 10,
-    raca: 'Galgo',
-    peso: 15,
-    tutor: 'Homer',
-    contato: '(81) 99999-9999',
-    vacinado: false,
-    servicos: ['banho']
-}];
+// Função para atualizar banco:
+
+const atualizarBanco = () => {
+    // converssao de objeto javascript para JSON
+    let petsAtualizado = JSON.stringify(petsJSON);
+
+    // atualização do arquivo pets-Json.json
+    fs.writeFileSync('pets-Json.json', petsAtualizado, 'utf-8', null,2); 
+
+}
+
+petsJSON = JSON.parse(petsJSON);
+
+
+// Funçõa para listar o pets e os serviços realizados
 
 const listarPets = () => {
-    for(let pet of pets){
-    // console.log(pets[i].nome);
-    // console.log(pets[i].raca);
-    console.log(`${pet.nome}, ${pet.idade}, ${pet.tipo}, ${pet.raca}`);
+    for(let pet of petsJSON.pets){
+        console.log(`${pet.nome}, ${pet.idade}, ${pet.tipo}, ${pet.raca}`);
+        pet.vacinado ? console.log(`${pet.nome} está vaciando(a)`) : console.log(`${pet.nome} não está vaciando(a)`)
+        console.log('\n')
+        for(const servico of pet.servicos){
+            console.log(`${servico.tipo} - ${servico.data}`)
+        }
     }
 }
 
 // listarPets();
-// console.log(pet);
 
-const vacinarPet = () => {
-    for(let pet of pets){
-        if(pet.vacinado == false){
-            pet.vacinado = true;
-            console.log(`O pet ${pet.nome} foi vacinado com sucesso !`);
-        }else{
-            console.log(`Ops, ${pet.nome} já foi vacinado`)
-        }
-        
+// Função para vacinar os pets
+
+const vacinarPet = pet =>{
+    if(!pet.vacinado){
+        pet.vacinado = true;
+        console.log(`${pet.nome} foi vacinado(a) com sucesso !`);
+    }else{
+        console.log(`Ops, o ${pet.nome} já está vacinado(a)`)
     }
 }
 
-// vacinarPet();
+// vacinarPet(pets[1])
+
+
+// Função para campanha de vacinação
 
 const CampanhaVacina = () => {
-    var soma = 0;
-    for(let pet of pets){
-        if (pet.vacinado == false){
-            soma++;
+    console.log("Campanha de vacinação 2021");
+    console.log('===========================');
+    console.log("Vacinando...")
+    console.log('\n');
+
+    let petVacinados = 0;
+    for(let pet of petsJSON.pets){
+        if(!pet.vacinado){
+            vacinarPet(pet);
+            console.log(`${pet.nome} aderiu a campanha !`)
+            console.log('\n');
+            petVacinados++;
         }
     }
-    console.log(`${soma} foram vacinados!`)
+    console.log(`Nessa campanha foram vacinados ${petVacinados}`)
 }
-
-console.log("\n")
 
 // CampanhaVacina();
 
+//Criando função adicionar pet
+
 const adicionarPet = (nome, tipo,idade,raca,peso,tutor,contato,vacinado,servicos) => {
-    pets.push({
+    petsJSON.pets.push({
         nome: nome,
         tipo: tipo,
         idade: idade,
@@ -85,70 +83,92 @@ const adicionarPet = (nome, tipo,idade,raca,peso,tutor,contato,vacinado,servicos
         vacinado: vacinado,
         servicos: servicos
     });
+    atualizarBanco();
 }
 
-adicionarPet('Brian','Cachorro',15,'Beagle',12,'Peter','9999-9999',true,['tosa']);
+// adicionarPet('Brian','Cachorro',15,'Beagle',12,'Peter','9999-9999',true,[]);
 
-for(let pet of pets){
-    console.log(`${pet.nome} recebeu os seguintes cuidados: ${pet.servicos}`)
+//Criando função dar banho
+
+const darBanhoPet = pet =>{
+    pet.servicos.push({
+        'tipo':'banho',
+        'data': moment().format('DD-MM-YYYY')
+
+    });
+    console.log(`${pet.nome} está de banho tomado !`)
+    atualizarBanco();
 }
 
-const DarBanhoPet = () => {
-    for(let pet of pets){
-        for(let servico of pet.servicos){
-            if(!(pet.servicos.includes('banho')
-            )){
-            pet.servicos.push('banho');
-            }
-        }
-        
-    }
- }
-        
- 
-
-DarBanhoPet();
+// darBanhoPet(pets[0])
+// darBanhoPet(pets[3])
 
 
-const TosarPet = () => {
-    for(let pet of pets){
-        for(let servico of pet.servicos){
-            if(!(pet.servicos.includes('tosa')
-            )){
-            pet.servicos.push('tosa');
-            }
-        }
-        
-    }
- }
-        
- 
+//criando função para tosar o pet
 
-TosarPet();
+const tosarPet = pet => {
+    pet.servicos.push({
+        'tipo':'tosar',
+        'data':moment().format('DD-MM-YYYY')
+    });
+    console.log(`${pet.nome} está tosado(a) !`)
+    atualizarBanco();
 
-const ApararUnha = () => {
-    for(let pet of pets){
-        for(let servico of pet.servicos){
-            if(!(pet.servicos.includes('Aparar unha')
-            )){
-            pet.servicos.push('Aparar unha');
-            }
-        }
-        
-    }
- }
-        
- 
-
-ApararUnha();
-
-console.log('\n')
-
-console.log("Após as aplicação das funções...")
-
-console.log('\n')
-for(let pet of pets){
-    console.log(`${pet.nome} recebeu os seguintes cuidados: ${pet.servicos}`)
 }
 
- 
+// tosarPet(pets[1]);
+
+// Criando função aparar unhas
+
+const apararUnha = pet =>{
+    pet.servicos.push({
+        'tipo':'aparar unha',
+        'data': moment().format('DD-MM-YYYY')
+    })
+    console.log(`${pet.nome} teve as unhas aparadas !`)
+    atualizarBanco();
+}
+
+// apararUnha(pets[2])
+
+// listarPets()
+
+// AtenderCliente usando callback
+const AtenderCliente = (pet, servico) =>{
+    console.log(`Olá, ${pet.nome}`);
+    (servico) ? servico(pet) : console.log("Só vim dá uma olhadinha");
+    console.log('Tchau, até mais!');
+    console.log('\n');
+}
+
+// AtenderCliente usando switch case
+
+const AtenderCliente2 = (pet, servico) =>{
+    let disponiveis = ['banho','tosa','aparar unha'];
+   switch(servico.toLowerCase()){
+       case 'banho':
+           darBanhoPet(pet);
+        break;
+        case 'tosa':
+            tosarPet(pet);
+         break;
+
+         case 'aparar unha':
+            apararUnha(pet);
+         break;
+
+         default:
+             console.log("Lamento, não oferecemos esse serviço")
+             
+
+
+   }
+    
+}
+
+
+// AtenderCliente(pets[0], darBanhoPet)
+
+AtenderCliente(petsJSON.pets[0])
+// adicionarPet('Brian','Cachorro',15,'Labrador',12,'Peter','9999-9999',true,[]);
+listarPets();
