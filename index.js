@@ -207,14 +207,19 @@ const filtraPet = (idade) =>{
 
 //Criando listarPets com forEach
 
-const listarPets2 = () => {    
+const listarPets2 = () => {
     petsJSON.pets.forEach((pet) => {
-        console.log(pet.nome)
-    });
-    console.log("\n Esses os animais que temos em nossos registros")
+        let {nome,idade,tipo,raca,vacinado} = pet;
+        console.log(`${nome}, ${idade} anos, ${tipo}, ${raca}, ${(vacinado) ? 'vacinado': 'não vacinado'}`);
+    
+        pet.servicos.forEach((servico) => {
+            let {data,tipo} = servico;
+            console.log(`${data} - ${tipo}`);
+        })
+    })
 }
 
-// listarPets2();
+listarPets2();
 
 // Campanha de vacinação usando .map()
 
@@ -249,3 +254,39 @@ const clientePremium = (pet) => {
 // darBanhoPet(petsJSON.pets[0])
 // darBanhoPet(petsJSON.pets[0])
 // clientePremium(petsJSON.pets[0])
+
+const clientePremium2 = (pet) => {
+    let {nome} = pet
+    let nServicos = pet.servicos.length;
+
+    if (nServicos > 3){
+        console.log(`Olá, ${nome}! Você é um cliente especial e ganhou um descontão!`); }
+        else{
+            console.log(`Olá, ${nome}! Você ainda não tem desconto disponiveis!`);
+        }
+    }
+
+// clientePremium2(petsJSON.pets[0])
+
+const contatoTutor = (pet) =>{
+    let {nome,tutor,contato} = pet;
+    return `Tutor: ${tutor}
+            Contato: ${contato}
+            Pet: ${nome}`
+
+}
+
+//  console.log(contatoTutor(petsJSON.pets[0]))
+
+const filtrarTutor = (nomeTutor) => {
+    let petsTutor = petsJSON.pets.filter((pet) =>{
+        return pet.tutor = nomeTutor
+    });
+    
+    console.log('Pets do tutor ${nomeTutor}:')
+    petsTutor.forEach((pet) => {
+        console.log(`${pet.nome} - ${pet.tipo}`)
+    })
+}
+
+// filtrarTutor('João')
