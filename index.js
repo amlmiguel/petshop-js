@@ -143,7 +143,7 @@ const AtenderCliente = (pet, servico) =>{
 
 // AtenderCliente usando switch case
 
-const AtenderCliente2 = (pet, servico) =>{
+const AtenderCliente2 = (pet, servico) => {
     let disponiveis = ['banho','tosa','aparar unha'];
    switch(servico.toLowerCase()){
        case 'banho':
@@ -169,6 +169,83 @@ const AtenderCliente2 = (pet, servico) =>{
 
 // AtenderCliente(pets[0], darBanhoPet)
 
-AtenderCliente(petsJSON.pets[0])
+// AtenderCliente(petsJSON.pets[0])
 // adicionarPet('Brian','Cachorro',15,'Labrador',12,'Peter','9999-9999',true,[]);
-listarPets();
+// listarPets();
+
+
+
+
+// Criando a função buscarPet usando .find 
+const buscarPet = (pet) => {
+    const animal = petsJSON.pets.find(function(animal) {
+    return animal.nome == pet;
+});
+    animal ? console.log(`${animal.nome} apresenta as seguintes características \n
+    dono: ${animal.tutor} \n
+    peso: ${animal.peso} \n
+    idade: ${animal.idade} \n
+    raça: ${animal.raca} \n
+    vacinado: ${animal.vacinado}`) : console.log(`${pet} não encontrado`)
+
+    }
+    
+// buscarPet("Mel")
+
+//Criando a filtrando os animais vacinados através da função .filter() e listando com .forEach()
+
+const filtraPet = (idade) =>{
+    let pets = petsJSON.pets.filter((pet) =>{
+        return pet.idade >= idade;
+    })
+    pets.forEach(filtrado =>{
+        console.log(filtrado.nome)
+    })
+}
+
+// filtraPet(5)
+
+//Criando listarPets com forEach
+
+const listarPets2 = () => {    
+    petsJSON.pets.forEach((pet) => {
+        console.log(pet.nome)
+    });
+    console.log("\n Esses os animais que temos em nossos registros")
+}
+
+// listarPets2();
+
+// Campanha de vacinação usando .map()
+
+const CampanhaVacina2 = () => {
+    let petsvacinados = 0; 
+    const vacinados = petsJSON.pets.map(function(pet){
+        if(!pet.vacinado){
+            vacinarPet(pet);
+            petsvacinados++
+        }
+
+        return pet
+    });
+        console.log(`Nessa campanha foram vacinados ${petsvacinados} pets`)
+    
+}
+
+// CampanhaVacina2()
+
+//  Calculando numero de atendimentos e avisa que tem desconto disponivel no atendimento com .reduce()
+const clientePremium = (pet) => {
+    let nServicos = pet.servicos.length;
+
+    if (nServicos > 3){
+        console.log(`Olá, ${pet.nome}! Você é um cliente especial e ganhou um descontão!`); }
+        else{
+            console.log(`Olá, ${pet.nome}! Você ainda não tem desconto disponiveis!`);
+        }
+    }
+// darBanhoPet(petsJSON.pets[0])
+// darBanhoPet(petsJSON.pets[0])
+// darBanhoPet(petsJSON.pets[0])
+// darBanhoPet(petsJSON.pets[0])
+// clientePremium(petsJSON.pets[0])
